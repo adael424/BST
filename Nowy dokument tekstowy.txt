@@ -1,0 +1,60 @@
+#include "dialog.h"
+#include "ui_dialog.h"
+
+Dialog::Dialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::Dialog)
+{
+    ui->setupUi(this);
+}
+
+Dialog::~Dialog()
+{
+    delete ui;
+}
+
+int Dialog::adjustment(int a)
+{
+    if (a==0)
+        return 0;
+    else return(adjustment(a-1)+qPow(2, a-1));
+}
+
+void Dialog::paintEvent(QPaintEvent *e)
+{
+    int height=start->height;
+    paintEvent2(start,0, height);
+}
+
+void Dialog::paintEvent2(struct node *first, int rightadj, int height)
+{
+    QString s;
+    QPainter painter(this);
+    QPoint polozenie;
+    
+    if (first!=NULL)
+    {
+    s = QString::number(first->key);
+    polozenie.setX(qPow(2, first->height)*25+(rightadj/qPow(2,first->height)*25)*qPow(2, first->height+1));
+    polozenie.setY(300-first->height*70);
+    painter.drawText(polozenie, s);
+
+
+    if(first->left)
+    {
+    painter.drawLine(polozenie.x()+5,polozenie.y()+5, qPow(2, first->height-1)*25+(rightadj/qPow(2,first->height-1)*25)*qPow(2, first->height)+5,polozenie.y()+50);
+    }
+
+    if(first->right)
+    {
+    painter.drawLine(polozenie.x()+5,polozenie.y()+5, qPow(2, first->height-1)*25+((rightadj+qPow(2,first->height-1))/qPow(2,first->height-1)*25)*qPow(2, first->height),polozenie.y()+50);
+    }
+
+
+
+    
+    paintEvent2(first->left, rightadj);
+    paintEvent2(first->right, rightadj+qPow(2,first->height-1));}
+
+
+    }
